@@ -1,27 +1,27 @@
 "use client";
 
-import createGlobe from "cobe";
-import type { COBEOptions } from "cobe";
+import createGlobe, { COBEOptions } from "cobe";
 import { useMotionValue, useSpring } from "motion/react";
 import { useEffect, useRef } from "react";
-import { cn } from "../../lib/utils";
+
+import { cn } from "@/lib/utils";
 
 const MOVEMENT_DAMPING = 1400;
 
-const GLOBE_CONFIG: COBEOptions = {
+export const GLOBE_CONFIG: COBEOptions = {
   width: 800,
   height: 800,
   onRender: () => {},
   devicePixelRatio: 2,
   phi: 0,
   theta: 0.3,
-  dark: 1,
-  diffuse: 1.2, // adds lighting contrast
+  dark: 0,
+  diffuse: 0.4,
   mapSamples: 16000,
-  mapBrightness: 2.0, // ✅ max visibility of continents
-  baseColor: [0.6, 0.6, 0.6], // ✅ light gray, brings out map texture
-  markerColor: [1, 0.5, 0.2], // orange markers
-  glowColor: [0.4, 0.6, 1],   // blue glow
+  mapBrightness: 1.2,
+  baseColor: [1, 1, 1],
+  markerColor: [251 / 255, 100 / 255, 21 / 255],
+  glowColor: [1, 1, 1],
   markers: [
     { location: [14.5995, 120.9842], size: 0.03 },
     { location: [19.076, 72.8777], size: 0.1 },
@@ -35,9 +35,6 @@ const GLOBE_CONFIG: COBEOptions = {
     { location: [41.0082, 28.9784], size: 0.06 },
   ],
 };
-
-
-
 
 export function Globe({
   className,
@@ -106,13 +103,13 @@ export function Globe({
   return (
     <div
       className={cn(
-        "w-full h-full max-w-[400px] aspect-square",
-        className,
+        "absolute inset-0 mx-auto aspect-[1/1] w-full max-w-[600px]",
+        className
       )}
     >
       <canvas
         className={cn(
-          "w-full h-full opacity-0 transition-opacity duration-500 [contain:layout_paint_size]",
+          "size-full opacity-0 transition-opacity duration-500 [contain:layout_paint_size]"
         )}
         ref={canvasRef}
         onPointerDown={(e) => {

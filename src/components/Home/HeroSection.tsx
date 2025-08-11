@@ -1,14 +1,14 @@
-import { AnimatedShinyTextDemo } from "../../components/effects/ShineyText";
-import ParticlesEffect from "../effects/Particles";
-import { FaArrowRightLong } from "react-icons/fa6";
-import { BorderBeam } from "../../components/magicui/border-beam";
+"use client";
 import { motion } from "framer-motion";
-import heroimg from "../../assets/hero.png";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { AnimatedShinyTextDemo } from "../../components/effects/ShineyText";
+import { BorderBeam } from "../../components/magicui/border-beam";
 import BgShape from "../BgShape";
+import ParticlesEffect from "../effects/Particles";
 const HeroSection = () => {
   return (
     <div className="w-full text-white px-30 py-14 pb-25 flex flex-col items-center relative min-h-screen mt-30 overflow-x-hidden">
-    <div className="pointer-events-none absolute bottom-0 left-0 w-full h-[40vh] bg-gradient-to-t from-black via-black/80 to-black blur-2xl aspect-square z-30" />
+      <div className="pointer-events-none absolute bottom-0 left-0 w-full h-[40vh] bg-gradient-to-t from-black via-black/80 to-black blur-2xl aspect-square z-30" />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -61,7 +61,13 @@ const HeroSection = () => {
       >
         <BgShape top="-100px" width="115%" left="-8%" height="90%"></BgShape>
         <BorderBeam duration={10} />
-        <img src={heroimg} alt="Hero" className="size-full object-cover rounded-4xl" />
+        <img
+          src={
+            "https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg"
+          }
+          alt="Hero"
+          className="size-full object-cover rounded-4xl"
+        />
 
         {/* Black fade at bottom to hide glow */}
         <div className="pointer-events-none absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black via-black/80 to-black blur-2xl aspect-square z-30" />

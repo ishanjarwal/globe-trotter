@@ -1,9 +1,8 @@
+import { HiMiniArrowLongLeft, HiMiniArrowLongRight } from "react-icons/hi2";
 import BgShape from "../BgShape";
 import { AnimatedBeamDemo } from "../effects/Beam";
-import { GlobeDemo } from "../effects/Globe";
 import { OrbitingCirclesDemo } from "../effects/Orbit";
-import { HiMiniArrowLongRight } from "react-icons/hi2";
-import { HiMiniArrowLongLeft } from "react-icons/hi2";
+import { Globe } from "../magicui/globe";
 {
   /* <HiMiniArrowLongRight /> */
 }
@@ -43,7 +42,7 @@ const Flow = () => {
                 nostrum fugit dicta dolorum quasi neque corrupti blanditiis.
               </div>
               <span className="">
-                <HiMiniArrowLongRight size={42} fill="#CCCCCC"/>
+                <HiMiniArrowLongRight size={42} fill="#CCCCCC" />
               </span>
             </div>
           </div>
@@ -51,14 +50,10 @@ const Flow = () => {
             <AnimatedBeamDemo></AnimatedBeamDemo>
           </div>
         </div>
-
-
-        
-
         <div className="container grid grid-cols-2 mt-40 px-10 relative z-10">
           <BgShape right="100px" height="350px" width="350px"></BgShape>
           <div className="left col-span-1 h-[60vh] p-10 px-1 relative  rounded-4xl border border-[#AAAAAA]/40  bg-[#1C1C1C]/40">
-            <GlobeDemo></GlobeDemo>
+            <Globe />
           </div>
           <div className="left col-span-1 flex py-15 pl-15 pr-10">
             <div className="con max-w-[90%] relative border-r border-r-gray-400/80 pr-12 pt-15 flex flex-col ml-20">
@@ -86,7 +81,7 @@ const Flow = () => {
                 nostrum fugit dicta dolorum quasi neque corrupti blanditiis.
               </div>
               <span className="">
-                <HiMiniArrowLongRight size={42} fill="#CCCCCC"/>
+                <HiMiniArrowLongRight size={42} fill="#CCCCCC" />
               </span>
             </div>
           </div>

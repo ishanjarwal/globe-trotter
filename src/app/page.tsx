@@ -9,14 +9,14 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-     <div className="min-h-screen bg-black border border-stone-200/30">
-        <Header/>
-        <HeroSection></HeroSection>
-        <Features></Features>
-        <Satisfactions></Satisfactions>
-        <Flow></Flow>
-        <Faq3></Faq3>
-        <Footer7></Footer7>
-      </div>
+    <div className="min-h-screen bg-black border border-stone-200/30">
+      <Header />
+      <HeroSection></HeroSection>
+      <Features></Features>
+      <Satisfactions></Satisfactions>
+      <Flow></Flow>
+      <Faq3></Faq3>
+      <Footer7></Footer7>
+    </div>
   );
 }

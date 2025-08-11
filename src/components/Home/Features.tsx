@@ -1,12 +1,9 @@
-'use clinet'
+"use client";
 import { useState } from "react";
 import { RiSecurePaymentLine } from "react-icons/ri";
 import { RiMoneyRupeeCircleLine } from "react-icons/ri";
 import { TiGroupOutline } from "react-icons/ti";
 import BgShape from "../BgShape";
-import img1 from "../../assets/security.jpg";
-import img2 from "../../assets/money.jpg";
-import img3 from "../../assets/community.jpg";
 import clsx from "clsx";
 import { BorderBeam } from "../magicui/border-beam";
 export const Features = () => {
@@ -16,28 +13,30 @@ export const Features = () => {
       title: "Secure Transactions",
       description:
         " Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae illum ad facere dignissimos iusto obcaecati aspernatur consequuntur iste.",
-      img: img1,
+      img: "https://images.pexels.com/photos/39624/padlock-lock-chain-key-39624.jpeg",
       icon: <RiSecurePaymentLine />,
     },
     {
       title: "Low Fees",
       description:
         " Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae illum ad facere dignissimos iusto obcaecati aspernatur consequuntur iste.",
-      img: img2,
+      img: "https://images.pexels.com/photos/17893115/pexels-photo-17893115.jpeg",
       icon: <RiMoneyRupeeCircleLine />,
     },
     {
       title: "Community-driven",
       description:
         " Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae illum ad facere dignissimos iusto obcaecati aspernatur consequuntur iste.",
-      img: img3,
+      img: "https://images.pexels.com/photos/3280130/pexels-photo-3280130.jpeg",
       icon: <TiGroupOutline />,
     },
   ];
 
-
   return (
-    <div id="features" className="min-h-screen mt-20  overflow-hidden pb-20 relative  bg-stone-900/20">
+    <div
+      id="features"
+      className="min-h-screen mt-20  overflow-hidden pb-20 relative  bg-stone-900/20"
+    >
       <h1 className="text-5xl font-medium text-white pl-20 mt-10">Featurs</h1>
       <div className="container relative w-full z-40 pt-5 mt-5 pb-15 px-20">
         <BgShape
@@ -67,9 +66,7 @@ export const Features = () => {
                   onClick={() => setIdx(id)}
                   className={clsx(
                     "mt-3 text-lg cursor-pointer text-[#a38f7f] font-medium relative transition-all duration-300 w-fit px-2 pr-6 py-1 rounded-tr-2xl rounded-br-2xl",
-                    idx === id
-                      ? "text-white translate-x-5"
-                      : "text-gray-300/80"
+                    idx === id ? "text-white translate-x-5" : "text-gray-300/80"
                   )}
                 >
                   {e.title}

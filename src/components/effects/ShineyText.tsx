@@ -1,6 +1,6 @@
 import { cn } from "../../lib/utils";
 import { AnimatedShinyText } from "../magicui/animated-shiny-text";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { ArrowRightIcon } from "lucide-react";
 export function AnimatedShinyTextDemo() {
   return (
     <div className="">

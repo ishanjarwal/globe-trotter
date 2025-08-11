@@ -1,117 +1,114 @@
 import { cn } from "../../lib/utils";
 import { Marquee } from "../magicui/marquee";
 
-const reviews = [
+const techstacks = [
   {
     name: "React.js",
-    body: "Powerful front-end library used to build fast, interactive user interfaces.",
+    body: "Powerful front-end library for building fast, interactive UIs.",
     img: "https://skillicons.dev/icons?i=react",
   },
   {
     name: "Node.js",
-    body: "JavaScript runtime for building fast and scalable server-side applications.",
+    body: "JavaScript runtime for scalable server-side apps.",
     img: "https://skillicons.dev/icons?i=nodejs",
   },
   {
     name: "Express.js",
-    body: "Minimal and flexible Node.js web application framework for building APIs.",
+    body: "Minimal Node.js framework for APIs.",
     img: "https://skillicons.dev/icons?i=express",
   },
   {
     name: "MongoDB",
-    body: "NoSQL database used for flexible, JSON-like document storage.",
+    body: "NoSQL database for JSON-like document storage.",
     img: "https://skillicons.dev/icons?i=mongodb",
   },
   {
     name: "Tailwind CSS",
-    body: "Utility-first CSS framework used for designing responsive, modern UIs.",
+    body: "Utility-first CSS framework for responsive UI.",
     img: "https://skillicons.dev/icons?i=tailwind",
   },
   {
     name: "TypeScript",
-    body: "Typed superset of JavaScript used to improve code quality and scalability.",
+    body: "Typed superset of JavaScript for better scalability.",
     img: "https://skillicons.dev/icons?i=typescript",
   },
   {
     name: "Vite",
-    body: "Fast build tool and dev server for modern front-end development.",
+    body: "Fast build tool and dev server for modern web apps.",
     img: "https://skillicons.dev/icons?i=vite",
   },
   {
     name: "Clerk",
-    body: "User authentication and management used for seamless auth integration.",
+    body: "User authentication & management solution.",
     img: "https://avatars.githubusercontent.com/u/66987818?s=200&v=4",
   },
   {
     name: "OpenAI API",
-    body: "Integrated AI for intelligent features and automation in the app.",
-    img: "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png", // PNG fallback
+    body: "AI integration for intelligent app features.",
+    img: "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png",
   },
   {
     name: "Zod",
-    body: "TypeScript-first schema validation library for robust data validation.",
+    body: "TypeScript-first schema validation library.",
     img: "https://avatars.githubusercontent.com/u/72518640?s=200&v=4",
   },
   {
     name: "Shadcn/UI",
-    body: "Modern UI components built with Radix and Tailwind for flexible design.",
+    body: "Modern UI components with Radix & Tailwind.",
     img: "https://avatars.githubusercontent.com/u/139895814?s=200&v=4",
   },
 ];
 
-const firstRow = reviews.slice(0, reviews.length / 2);
-const secondRow = reviews.slice(reviews.length / 2);
+const firstRow = techstacks.slice(0, Math.ceil(techstacks.length / 2));
+const secondRow = techstacks.slice(Math.ceil(techstacks.length / 2));
 
-const ReviewCard = ({
+const TechStackCard = ({
   img,
   name,
-  username,
   body,
   bgColor,
 }: {
   img: string;
   name: string;
-  username: string;
   body: string;
   bgColor?: string;
 }) => {
   return (
     <figure
       className={cn(
-        "relative w-80 min-h-[12rem] cursor-pointer overflow-hidden rounded-xl text-left border p-6",
+        "relative w-64 min-h-[8rem] cursor-pointer overflow-hidden rounded-xl text-left border p-4 flex flex-col items-start justify-center",
         "border-gray-950/[.1] bg-white/5 hover:bg-white/10",
         "dark:border-white/10 dark:hover:bg-white/15",
         bgColor
       )}
     >
       <div className="flex items-center gap-3">
-        <img className="rounded-full w-10 h-10" src={img} />
-        <div>
-          <figcaption className="text-base font-semibold dark:text-white">
-            {name}
-          </figcaption>
-          <p className="text-sm font-medium dark:text-white/50">{username}</p>
-        </div>
+        <img className="w-10 h-10 rounded" src={img} alt={name} />
+        <figcaption className="text-base font-semibold dark:text-white">
+          {name}
+        </figcaption>
       </div>
-      <blockquote className="mt-4 text-base dark:text-white">{body}</blockquote>
+      <blockquote className="mt-2 text-sm dark:text-white/70">
+        {body}
+      </blockquote>
     </figure>
   );
 };
 
-export function MarqueeDemo() {
+export function TechStackMarquee() {
   return (
     <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
-      <div className="mt-20">
+      <div className="mt-10">
         <Marquee pauseOnHover className="[--duration:20s]">
-          {firstRow.map((review) => (
-            <ReviewCard key={review.username} {...review} />
+          {firstRow.map((tech) => (
+            <TechStackCard key={tech.name} {...tech} />
           ))}
         </Marquee>
       </div>
-      <div className="wrap mt-3">
+      <div className="mt-3">
         <Marquee reverse pauseOnHover className="[--duration:20s]">
-          {secondRow.map((review) => (
-            <ReviewCard key={review.username} {...review} />
+          {secondRow.map((tech) => (
+            <TechStackCard key={tech.name} {...tech} />
           ))}
         </Marquee>
       </div>
@@ -120,3 +117,5 @@ export function MarqueeDemo() {
     </div>
   );
 }
+
+export default TechStackMarquee;
