@@ -193,10 +193,13 @@ const data = [
 
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const res = await fetch(`/api/trip/${id}`, {
-    credentials: "include",
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/trip/${id}`,
+    {
+      credentials: "include",
+      cache: "no-store",
+    }
+  );
   console.log(res);
   if (!res.ok) {
     return redirect("/error");
