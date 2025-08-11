@@ -64,14 +64,14 @@ const HeroSection = () => {
         <BorderBeam duration={10} />
         <img
           src={
-            "https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg"
+            "/hero.png"
           }
           alt="Hero"
           className="size-full object-cover rounded-4xl"
         />
 
         {/* Black fade at bottom to hide glow */}
-        <div className="pointer-events-none absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black via-black/80 to-black blur-2xl aspect-square z-30" />
+        {/* <div className="pointer-events-none absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black via-black/80 to-black blur-2xl aspect-square z-30" /> */}
       </motion.div>
     </div>
   );

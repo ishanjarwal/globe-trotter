@@ -16,7 +16,7 @@ const Flow = () => {
 
       {/* Heading */}
 
-      <div className="box w-full px-32 flex justify-center">
+      <div className="box w-full px-32 flex justify-center text-center text-accent">
         <div className="heading max-w-4/5 ">
           <h1 className="text-7xl font-semibold">
             Simple Structure for everyone.

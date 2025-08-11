@@ -269,15 +269,15 @@ const page = () => (
         <div className="wrapper w-full bg">
           {data.map((e, id) => (
             <div className="date bg mt-10">
-              <div className="title w-full py-5  mb-2 text-3xl">
+              <div className="title w-full py-5  mb-2 text-3xl shadow-xl rounded-tr-2xl rounded-br-2xl px-2">
                 {`Day ${e.day}`}
               </div>
               {e.locations.map((e, id) => (
-                <div className="locations mt-10">
+                <div className="locations mt-10 bg-gray-300/60 py-4 px-3 rounded-2xl">
                   <div className="time font-semibold">{e.time}</div>
-                  <div className="title text-xl mt-2">{e.title}</div>
+                  <div className="title text-xl font-semibold mt-2">{e.title}</div>
                   <div className="desc-img flex w-full bg justify-between">
-                    <div className="desc w-1/2 text-lg mt-3">
+                    <div className="desc w-1/2 text-lg mt-3 flex items-center">
                       {e.description}
                     </div>
                     <div className="image h-32 w-2/6">

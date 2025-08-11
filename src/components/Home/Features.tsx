@@ -10,23 +10,22 @@ export const Features = () => {
   const [idx, setIdx] = useState(0);
   const data = [
     {
-      title: "Secure Transactions",
+      title: "AI-Powered Personalized Itinerary",
       description:
-        " Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae illum ad facere dignissimos iusto obcaecati aspernatur consequuntur iste.",
+        " Our advanced AI planner takes your preferences—like destination, interests, budget, and duration—and creates a fully customized travel itinerary just for you. No more generic travel plans. Whether you’re into food, adventure, culture, or relaxation, our AI tailors the perfect trip, from must-see destinations to hidden local gems.",
       img: "https://images.pexels.com/photos/39624/padlock-lock-chain-key-39624.jpeg",
       icon: <RiSecurePaymentLine />,
     },
     {
-      title: "Low Fees",
+      title: "Real-Time Dynamic Adjustments ",
       description:
-        " Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae illum ad facere dignissimos iusto obcaecati aspernatur consequuntur iste.",
-      img: "https://images.pexels.com/photos/17893115/pexels-photo-17893115.jpeg",
+        "Plans change, and we get it! Our AI adapts in real-time based on updates like weather forecasts, flight status, or local events. If the weather forecast calls for rain on your hiking day, we’ll suggest an indoor museum tour instead. Your itinerary is as flexible as your travel spirit.",
       icon: <RiMoneyRupeeCircleLine />,
     },
     {
-      title: "Community-driven",
+      title: "Interactive Travel Assistant",
       description:
-        " Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae illum ad facere dignissimos iusto obcaecati aspernatur consequuntur iste.",
+        " Not sure where to go next or need last-minute changes? Just ask! Our AI assistant is available through both text and voice. Whether you type a quick message or speak to it on the go, you’ll get real-time recommendations, instant itinerary updates, or even answers to your travel questions—hands-free.",
       img: "https://images.pexels.com/photos/3280130/pexels-photo-3280130.jpeg",
       icon: <TiGroupOutline />,
     },
@@ -81,11 +80,11 @@ export const Features = () => {
             </div>
             <div className="context mt-14">
               <span className="text-6xl text-[#a38f7f]">{data[idx].icon}</span>
-              <h1 className="text-6xl max-w-8/12  h-32 text-[#f5f0e6]">
+              <h1 className="text-5xl max-w-8/12  h-32 text-[#f5f0e6]">
                 {data[idx].title}
               </h1>
               <div className="description mt-8 max-w-3/4">
-                <p className="text-[1.1rem]">{data[idx].description}</p>
+                <p className="text-[1.1rem] text-accent">{data[idx].description}</p>
               </div>
             </div>
           </div>
