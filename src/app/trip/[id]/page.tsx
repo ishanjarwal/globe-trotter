@@ -17,11 +17,9 @@ export default function TripPage() {
 
   useEffect(() => {
     if (!id) return;
-
     const fetchData = async () => {
       try {
         const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/trip/${id}`;
-        console.log("Fetching:", url);
         const res = await axios.get(url, { withCredentials: true });
         if (res.status === 200) {
           setData(res.data);
@@ -35,122 +33,129 @@ export default function TripPage() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [id, router]);
 
-  if (loading) return <div className="p-10">Loading...</div>;
+  if (loading)
+    return (
+      <div className="p-10 bg-[#121212] text-[#bbbbbb] min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
   if (!data) return null;
 
   return (
-    <div className="parent flex w-full min-h-screen relative">
-      <div className="left w-[50%] px-12 pt-14 overflow-hidden overflow-y-auto">
-        <h1 className="text-7xl leading-20 text-foreground">{data.title}</h1>
-        <h3 className="mt-8 text-xl text-muted-foreground">
+    <div className="flex items-center justify-center min-h-screen bg-[#121212] px-6 py-10 text-[#e5e5e5]">
+      <div className="max-w-5xl w-full bg-[#1a1a1a] rounded-2xl shadow-lg p-8 overflow-y-auto border border-[#2a2a2a]">
+        <h1 className="text-5xl font-bold text-center text-primary">
+          {data.title}
+        </h1>
+        <h3 className="mt-4 text-lg text-center text-[#aaaaaa]">
           {data.description}
         </h3>
 
-        <div className="image bg-orange-500 w-full mt-10 rounded-lg h-[40vh]">
-          <img
-            className="size-full object-cover rounded-lg"
-            src="https://images.pexels.com/photos/1530259/pexels-photo-1530259.jpeg"
-            alt=""
-          />
+        <div className="mt-8 rounded-lg overflow-hidden border border-[#2b2b2b]">
+          {data.image && (
+            <img
+              className="w-full h-80 object-cover"
+              src={getGooglePlacePhotoUrl(data.image)}
+              alt=""
+            />
+          )}
         </div>
 
-        <div className="trip-details mt-10">
-          <h1 className="text-2xl flex items-center text-foreground">
-            <MapPin className="mr-2" size={25} />
-            Trip Details
-          </h1>
-          <div className="flex gap-x-10 mt-5">
-            <div className="w-1/2">
-              <h1 className="mb-2 text-2xl">From</h1>
-              <span className="text-xl text-muted-foreground">
+        {/* Trip Details */}
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold flex items-center text-[#f0f0f0]">
+            <MapPin className="mr-2" size={25} /> Trip Details
+          </h2>
+          <div className="grid grid-cols-2 gap-6 mt-4">
+            <div className="bg-[#1f1f1f] p-4 rounded-lg border border-[#2b2b2b]">
+              <h3 className="text-xl font-medium">From</h3>
+              <p className="text-[#aaaaaa]">
                 {format(new Date(data.startDate), "dd/MM/yy")}
-              </span>
+              </p>
             </div>
-            <div className="w-1/2">
-              <h1 className="mb-2 text-2xl">To</h1>
-              <span className="text-xl text-muted-foreground">
+            <div className="bg-[#1f1f1f] p-4 rounded-lg border border-[#2b2b2b]">
+              <h3 className="text-xl font-medium">To</h3>
+              <p className="text-[#aaaaaa]">
                 {format(new Date(data.endDate), "dd/MM/yy")}
-              </span>
+              </p>
             </div>
           </div>
-          <div className="mt-7">
-            <h1 className="text-2xl flex items-center">
-              <IoIosPeople className="mr-2" size={25} />
-              People Information
-            </h1>
-            <div className="flex gap-x-10 mt-3">
-              <div>
-                <h1 className="mb-2 text-2xl">Adults</h1>
-                <span className="text-xl text-muted-foreground">
-                  {data.totalAdults}
-                </span>
-              </div>
-              <div>
-                <h1 className="mb-2 text-2xl">Children</h1>
-                <span className="text-xl text-muted-foreground">
-                  {data.totalChildren}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        </section>
 
-        <div className="highlights mt-10">
-          <h1 className="text-2xl flex items-center">
+        {/* People Info */}
+        <section className="mt-8">
+          <h2 className="text-2xl font-semibold flex items-center text-[#f0f0f0]">
+            <IoIosPeople className="mr-2" size={25} /> People Information
+          </h2>
+          <div className="grid grid-cols-2 gap-6 mt-3">
+            <div className="bg-[#1f1f1f] p-4 rounded-lg border border-[#2b2b2b]">
+              <h3 className="text-xl font-medium">Adults</h3>
+              <p className="text-[#aaaaaa]">{data.totalAdults}</p>
+            </div>
+            <div className="bg-[#1f1f1f] p-4 rounded-lg border border-[#2b2b2b]">
+              <h3 className="text-xl font-medium">Children</h3>
+              <p className="text-[#aaaaaa]">{data.totalChildren}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Highlights */}
+        <section className="mt-8">
+          <h2 className="text-2xl font-semibold flex items-center text-[#f0f0f0]">
             <Key className="mr-3" /> Highlights
-          </h1>
-          <ul className="mt-5">
+          </h2>
+          <ul className="mt-4 list-disc pl-6 text-[#aaaaaa]">
             {Array.from({ length: 5 }).map((_, idx) => (
-              <li key={idx} className="mt-2 text-xl text-muted-foreground">
+              <li key={idx} className="mt-2">
                 This
               </li>
             ))}
           </ul>
-        </div>
+        </section>
 
-        <div className="itenary mt-20">
-          <h1 className="text-4xl">Day Based Itinerary</h1>
+        {/* Itinerary */}
+        <section className="mt-10">
+          <h2 className="text-3xl font-bold text-[#f0f0f0]">
+            Day Based Itinerary
+          </h2>
           {data.days.map((day: any, index: number) => (
-            <div key={index} className="mt-10">
-              <div className="py-5 mb-2 text-3xl shadow-xl rounded-tr-2xl rounded-br-2xl px-2">
+            <div key={index} className="mt-6">
+              <h3 className="py-3 mb-2 text-2xl font-semibold bg-[#1f1f1f] rounded-lg px-4 border border-[#2b2b2b]">
                 {day.name}
-              </div>
+              </h3>
               {day.itineraryItems.map((e: any, idx: number) => (
                 <div
                   key={idx}
-                  className="mt-10 bg-gray-300/60 py-4 px-3 rounded-2xl"
+                  className="mt-4 bg-[#2a2a2a] p-4 rounded-xl border border-[#3a3a3a]"
                 >
                   <Link
-                    className="text-blue-500 underline"
+                    className="text-primary/75"
                     href={getGoogleMapsLink(e.latitude, e.longitude)}
                   >
                     Open on Maps
                   </Link>
-                  <div className="title text-xl font-semibold mt-2">
+                  <h4 className="mt-2 text-xl font-semibold text-[#f5f5f5]">
                     {e.title}
-                  </div>
-                  <div className="flex justify-between mt-3">
-                    <div className="w-1/2 text-lg">{e.description}</div>
-                    <div className="h-32 w-2/6">
+                  </h4>
+                  <div className="flex gap-4 mt-3">
+                    <p className="flex-1 text-[#cccccc]">{e.description}</p>
+                    {e.image && (
                       <img
-                        className="size-full"
+                        className="h-28 w-40 object-cover rounded-md"
                         src={getGooglePlacePhotoUrl(e.image, 450)}
                         alt={e.title}
                       />
-                    </div>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           ))}
-        </div>
+        </section>
       </div>
-
-      <div className="right w-[50%] h-screen sticky top-0 right-0"></div>
     </div>
   );
 }

@@ -64,6 +64,7 @@ Generate a trip plan in the following strict JSON schema:
 {
   "title": string,
   "description": string,
+  "highlights": array of strings,
   "days": [
     {
       "name": string,
@@ -101,6 +102,7 @@ Description: ${description}
     let jsonResponse: {
       title: string;
       description: string;
+      highlights: string[];
       days: Array<{
         name: string;
         itineraryItems: Array<{
@@ -181,6 +183,7 @@ Description: ${description}
         userId, // Clerk user ID string (not ObjectId)
         title: jsonResponse.title,
         description: jsonResponse.description,
+        highlights: jsonResponse.highlights,
         startDate,
         endDate,
         budget: budget.value,
