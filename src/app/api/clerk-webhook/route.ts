@@ -1,65 +1,45 @@
-import prisma from "@/config/prisma";
-import { WebhookEvent } from "@clerk/nextjs/server";
+import { Webhook, WebhookRequiredHeaders } from "svix";
 import { headers } from "next/headers";
-import { NextRequest } from "next/server";
-import { Webhook } from "svix";
+import prisma from "@/config/prisma";
 
-export const POST = async (req: NextRequest) => {
-  try {
-    const secret = process.env.CLERK_SIGNING_SECRET;
-    if (!secret) {
-      throw new Error("Invalid clerk signing secret : " + secret);
-    }
-    const wh = new Webhook(secret);
-
-    // Get headers
-    const headerPayload = await headers();
-    const svix_id = headerPayload.get("svix-id");
-    const svix_timestamp = headerPayload.get("svix-timestamp");
-    const svix_signature = headerPayload.get("svix-signature");
-
-    // If there are no headers, error out
-    if (!svix_id || !svix_timestamp || !svix_signature) {
-      return new Response("Error: Missing Svix headers", {
-        status: 400,
-      });
-    }
-
-    const payload = await req.json();
-    const body = JSON.stringify(payload);
-
-    const evt: WebhookEvent = wh.verify(body, {
-      "svix-id": svix_id,
-      "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature,
-    }) as WebhookEvent;
-
-    const evtType = evt.type;
-    switch (evtType) {
-      case "user.created":
-      case "user.updated":
-        await prisma.user.upsert({
-          where: { clerkId: evt.data.id },
-          create: {
-            clerkId: evt.data.id,
-            email: evt.data.email_addresses[0].email_address,
-            name: evt.data.first_name + " " + evt.data.last_name,
-          },
-          update: {
-            email: evt.data.email_addresses[0].email_address,
-            name: evt.data.first_name + " " + evt.data.last_name,
-          },
-        });
-        break;
-
-      default:
-        console.log("unhandled clerk webhook event");
-        break;
-    }
-
-    return new Response("Clerk webhook event recieved", { status: 200 });
-  } catch (error) {
-    console.log("Clerk webhook error ; ", error);
-    return new Response("Internal Server Error", { status: 500 });
+export async function POST(req: Request) {
+  const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+  if (!WEBHOOK_SECRET) {
+    throw new Error("Missing CLERK_WEBHOOK_SECRET env variable");
   }
-};
+
+  // Verify the request came from Clerk
+  const payload = await req.text();
+  const headers = req.headers as unknown as WebhookRequiredHeaders;
+  const wh = new Webhook(WEBHOOK_SECRET);
+
+  let evt;
+  try {
+    evt = wh.verify(payload, headers) as any;
+  } catch (err) {
+    return new Response("Invalid signature", { status: 400 });
+  }
+  console.log("Event Received : ", evt);
+  const { id, type, data } = evt;
+
+  if (type === "user.created" || type === "user.updated") {
+    await prisma.user.upsert({
+      where: { clerkId: data.id },
+      update: {
+        name: data.first_name,
+        email: data.email_addresses[0].email_address,
+      },
+      create: {
+        clerkId: data.id,
+        name: data.first_name,
+        email: data.email_addresses[0].email_address,
+      },
+    });
+  }
+
+  if (type === "user.deleted") {
+    await prisma.user.delete({ where: { clerkId: data.id } });
+  }
+
+  return new Response("Webhook received", { status: 200 });
+}
