@@ -46,10 +46,10 @@ const Header = () => {
         </Link>
       </nav>
       <div className="login-signup flex items-center gap-x-10">
-        <Link href={"/"} className="">
+        <Link href={"/login"} className="">
           Login
         </Link>
-        <Link href={"/"} className="px-4 py-1 rounded-lg bg-stone-800/90">
+        <Link href={"/signup"} className="px-4 py-1 rounded-lg bg-stone-800/90">
           Sign Up
         </Link>
       </div>

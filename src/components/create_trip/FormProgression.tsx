@@ -15,52 +15,98 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Loader from "../loader/Loader";
 
-interface BudgetType {
-  name: string;
-  value: string;
-}
-
-interface TripData {
-  description: string;
-  activities: string[];
-  adults: number;
-  children: number;
-  budget: BudgetType;
-  dates: Date | null;
-}
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TripSchema, TripFormData } from "./validation";
 
 interface FlowStep {
   element: React.ComponentType<any>;
   button: string;
 }
 
+// Map your components and pass needed props
 const flow: FlowStep[] = [
   { element: Description, button: "Next" },
   { element: DatePicker, button: "Next" },
   { element: Activities, button: "Next" },
   { element: Budget, button: "Next" },
   { element: NumberOfPeople, button: "Next" },
-  { element: Generate, button: "Next" },
+  { element: Generate, button: "Generate" },
 ];
 
 const FormProgression: React.FC = () => {
   const router = useRouter();
-  const [validationError, setValidationError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const initData: TripData = {
-    description: "",
-    activities: [],
-    adults: 1,
-    children: 0,
-    budget: { name: "", value: "" },
-    dates: null,
-  };
-  const [data, setData] = useState<TripData>(initData);
-
-  const sliderRef = useRef<SwiperType | null>(null);
   const [activeTabs, setActiveTabs] = useState<number>(1);
   const [deactiveTabs, setDeactiveTabs] = useState<number>(flow.length - 1);
+  const sliderRef = useRef<SwiperType | null>(null);
+
+  // React Hook Form with Zod
+  const {
+    control,
+    handleSubmit,
+    trigger,
+    formState: { errors },
+    getValues,
+  } = useForm<TripFormData>({
+    resolver: zodResolver(TripSchema),
+    mode: "onChange",
+    defaultValues: {
+      description: "",
+      dates: undefined,
+      activities: [],
+      budget: { name: "", value: "" },
+      adults: 1,
+      children: 0,
+    },
+  });
+
+  // On final submit
+  const createTrip = async (formData: TripFormData) => {
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/create", formData);
+      if (response.status === 200) {
+        const { id } = response.data;
+        router.push(`/trip/${id}`);
+      }
+    } catch (e) {
+      router.push("/error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Move to next slide after validating current step fields
+  const handleNext = async () => {
+    // Validate only current step fields (define fields per step)
+    let fieldsToValidate: (keyof TripFormData)[] = [];
+
+    switch (activeTabs) {
+      case 1:
+        fieldsToValidate = ["description"];
+        break;
+      case 2:
+        fieldsToValidate = ["dates"];
+        break;
+      case 3:
+        fieldsToValidate = ["activities"];
+        break;
+      case 4:
+        fieldsToValidate = ["budget"];
+        break;
+      case 5:
+        fieldsToValidate = ["adults", "children"];
+        break;
+      default:
+        fieldsToValidate = [];
+    }
+
+    const valid = await trigger(fieldsToValidate);
+    if (valid) {
+      sliderRef.current?.slideNext();
+    }
+  };
 
   const swiperOptions = {
     spaceBetween: 16,
@@ -70,45 +116,11 @@ const FormProgression: React.FC = () => {
     allowTouchMove: false,
     observer: true,
     observeParents: true,
-    onSlideChange(this: SwiperType) {
-      setActiveTabs(this.activeIndex + 1);
-      setDeactiveTabs(this.slides.length - (this.activeIndex + 1));
+    onSlideChange(swiper: SwiperType) {
+      setActiveTabs(swiper.activeIndex + 1);
+      setDeactiveTabs(swiper.slides.length - (swiper.activeIndex + 1));
     },
   };
-
-  // const checkDesc = async (description: string): Promise<boolean> => {
-  //   try {
-  //     setValidationError(null);
-  //     await axios.post(
-  //       `${process.env.NEXT_PUBLIC_ROOT}/api/create/checkDesc`,
-  //       { description },
-  //       { withCredentials: true }
-  //     );
-  //     return true;
-  //   } catch (error: any) {
-  //     if (error?.response?.status === 400) {
-  //       setValidationError(
-  //         JSON.parse(error.response.data.validationError).reply
-  //       );
-  //     }
-  //     return false;
-  //   }
-  // };
-
-  // const createTrip = async (tripData: TripData) => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await axios.post("/api/create", tripData);
-  //     if (response.status === 200) {
-  //       const { id } = response.data;
-  //       router.push(`/trip/${id}`);
-  //     }
-  //   } catch {
-  //     router.push("/error");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   useEffect(() => {
     if (sliderRef.current) {
@@ -121,7 +133,7 @@ const FormProgression: React.FC = () => {
 
   useEffect(() => {
     sliderRef.current?.update();
-  }, [data, activeTabs, deactiveTabs]);
+  }, [activeTabs, deactiveTabs]);
 
   return (
     <>
@@ -157,12 +169,13 @@ const FormProgression: React.FC = () => {
             {flow.map((item, idx) => (
               <SwiperSlide key={`flow-${idx}`}>
                 {React.createElement(item.element, {
-                  data,
-                  setData,
-                  // createTrip,
-                  setLoading,
-                  loading,
-                  validationError,
+                  control,
+                  register: undefined,
+                  errors,
+                  getValues,
+                  setValue: undefined,
+                  data: getValues(), // Current form values, optional
+                  setData: undefined,
                 })}
               </SwiperSlide>
             ))}
@@ -185,15 +198,7 @@ const FormProgression: React.FC = () => {
 
             {!sliderRef.current?.isEnd ? (
               <button
-                // onClick={async () => {
-                //   if (sliderRef.current?.activeIndex === 0) {
-                //     const valid = await checkDesc(data.description);
-                //     if (valid) sliderRef.current?.slideNext();
-                //   } else {
-                //     sliderRef.current?.slideNext();
-                //   }
-                // }}
-                onClick={() => sliderRef.current?.slideNext()}
+                onClick={handleNext}
                 className="group w-max flex justify-center items-center gap-x-2 py-6 text-white font-bold text-lg"
               >
                 <span>Next</span>
@@ -202,7 +207,15 @@ const FormProgression: React.FC = () => {
                 </span>
               </button>
             ) : (
-              <span></span>
+              <button
+                onClick={handleSubmit(createTrip)}
+                className="group w-max flex justify-center items-center gap-x-2 py-6 text-white font-bold text-lg"
+              >
+                <span>Generate</span>
+                <span className="group-hover:ms-4 duration-150 text-white">
+                  <IoArrowForwardOutline />
+                </span>
+              </button>
             )}
           </div>
         </div>
