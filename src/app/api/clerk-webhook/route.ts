@@ -1,6 +1,5 @@
-import { Webhook, WebhookRequiredHeaders } from "svix";
-import { headers } from "next/headers";
 import prisma from "@/config/prisma";
+import { Webhook } from "svix";
 
 export async function POST(req: Request) {
   try {
@@ -9,32 +8,36 @@ export async function POST(req: Request) {
       throw new Error("Missing CLERK_WEBHOOK_SECRET env variable");
     }
 
-    // Verify the request came from Clerk
     const payload = await req.text();
-    const headers = req.headers as unknown as WebhookRequiredHeaders;
 
-    console.log("Payload and Headers", payload, headers);
+    const svix_id = req.headers.get("svix-id");
+    const svix_timestamp = req.headers.get("svix-timestamp");
+    const svix_signature = req.headers.get("svix-signature");
+
+    if (!svix_id || !svix_timestamp || !svix_signature) {
+      return new Response("Missing required Svix headers", { status: 400 });
+    }
 
     const wh = new Webhook(WEBHOOK_SECRET);
 
-    console.log("Wh Webhook : ", wh);
-
-    let evt;
+    let evt: any;
     try {
-      evt = (await wh.verify(payload, headers)) as any;
+      evt = wh.verify(payload, {
+        "svix-id": svix_id,
+        "svix-timestamp": svix_timestamp,
+        "svix-signature": svix_signature,
+      });
       console.log("Event Verified");
     } catch (err) {
-      console.log("Event Verification Error : ", err);
+      console.error("Event Verification Error:", err);
       return new Response("Invalid signature", { status: 400 });
     }
 
-    console.log("Event Received : ", evt);
+    console.log("Event Received:", evt);
 
-    const { id, type, data } = evt;
+    const { type, data } = evt;
 
     if (type === "user.created" || type === "user.updated") {
-      console.log("Now Creating user or upserting");
-
       await prisma.user.upsert({
         where: { clerkId: data.id },
         update: {
@@ -55,6 +58,7 @@ export async function POST(req: Request) {
 
     return new Response("Webhook received", { status: 200 });
   } catch (error) {
-    return new Response(`Something went wrong : ${error}`, { status: 500 });
+    console.error(error);
+    return new Response(`Something went wrong: ${error}`, { status: 500 });
   }
 }
