@@ -1,21 +1,18 @@
+// app/api/trip/[id]/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/config/prisma";
 
 export const GET = async (
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const trip = await prisma.trip.findUnique({
       where: { id },
-      include: {
-        days: {
-          include: {
-            itineraryItems: true,
-          },
-        },
+      select: {
+        id: true,
       },
     });
 
@@ -23,7 +20,7 @@ export const GET = async (
       return NextResponse.json({ error: "Trip not found" }, { status: 404 });
     }
 
-    return NextResponse.json(trip, { status: 200 });
+    return NextResponse.json({ id: trip.id }, { status: 200 });
   } catch (error) {
     console.error("Error fetching trip:", error);
     return NextResponse.json(
