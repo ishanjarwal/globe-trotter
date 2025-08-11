@@ -75,12 +75,14 @@ const TechStackCard = ({
 }) => {
   return (
     <figure
+      
       className={cn(
-        "relative w-64 min-h-[8rem] cursor-pointer overflow-hidden rounded-xl text-left border p-4 flex flex-col items-start justify-center",
-        "border-gray-950/[.1] bg-white/5 hover:bg-white/10",
-        "dark:border-white/10 dark:hover:bg-white/15",
-        bgColor
-      )}
+      "relative w-64 min-h-[8rem] cursor-pointer overflow-hidden rounded-xl text-left border p-4 flex flex-col items-start justify-center",
+      "border-gray-950/[.1] bg-white/5 hover:bg-white/10",
+      "dark:border-white/10 dark:hover:bg-white/15",
+      "text-white",
+      bgColor
+    )}
     >
       <div className="flex items-center gap-3">
         <img className="w-10 h-10 rounded" src={img} alt={name} />
