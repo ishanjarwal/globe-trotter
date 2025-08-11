@@ -29,12 +29,10 @@ export const POST = async (req: Request) => {
         (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
       ) + 1;
 
-    // Initialize OpenAI client
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    // 1. Extract place name from description
     const placeResponse = await openai.chat.completions.create({
       model: "gpt-4o-mini", // or "gpt-4" or "gpt-4o"
       messages: [
@@ -49,7 +47,6 @@ export const POST = async (req: Request) => {
     const place = typeof rawPlace === "string" ? rawPlace.trim() : "";
     console.log("Extracted place:", place);
 
-    // 2. Generate trip plan JSON
     const prompt = `
 You are a travel planner.
 Generate a trip plan in the following strict JSON schema:
@@ -102,7 +99,6 @@ Description: ${description}
       return NextResponse.json({ isVague: true }, { status: 200 });
     }
 
-    // Fetch Trip main image from Google Places
     let tripImage: string | null = null;
     try {
       const {
@@ -125,7 +121,6 @@ Description: ${description}
       console.error("Error fetching trip image:", err);
     }
 
-    // Fetch images for itinerary items
     for (const day of jsonResponse.days) {
       for (const item of day.itineraryItems) {
         try {
@@ -147,49 +142,48 @@ Description: ${description}
     }
 
     console.log(jsonResponse);
-    // return NextResponse.json({ data: jsonResponse }, { status: 200 });
-
-    // Save to Prisma
-    // const { userId } = await auth();
-    const userId = "user_318ThLPGGaJ2BGeNdzyO8Rn2VMa";
-    if (!userId) {
-      return NextResponse.json(
-        { message: "Unauthorized Access" },
-        { status: 401 }
-      );
-    }
-    const newTrip = await prisma.trip.create({
-      data: {
-        userId,
-        title: jsonResponse.title,
-        description: jsonResponse.description,
-        startDate,
-        endDate,
-        budget: budget.value,
-        totalAdults: adults,
-        totalChildren: children,
-        image: tripImage,
-        days: {
-          create: jsonResponse.days.map((day: any) => ({
-            name: day.name,
-            itineraryItems: {
-              create: day.itineraryItems.map((item: any) => ({
-                day: item.day,
-                title: item.title,
-                description: item.description,
-                expense: item.expense,
-                image: item.image,
-              })),
-            },
-          })),
-        },
-      },
-      select: { id: true },
-    });
-
-    console.log("Trip saved:", newTrip.id);
-
     return NextResponse.json({ data: jsonResponse }, { status: 200 });
+
+    // const { userId } = await auth();
+    // const userId = "user_318ThLPGGaJ2BGeNdzyO8Rn2VMa";
+    // if (!userId) {
+    //   return NextResponse.json(
+    //     { message: "Unauthorized Access" },
+    //     { status: 401 }
+    //   );
+    // }
+    // const newTrip = await prisma.trip.create({
+    //   data: {
+    //     userId,
+    //     title: jsonResponse.title,
+    //     description: jsonResponse.description,
+    //     startDate,
+    //     endDate,
+    //     budget: budget.value,
+    //     totalAdults: adults,
+    //     totalChildren: children,
+    //     image: tripImage,
+    //     days: {
+    //       create: jsonResponse.days.map((day: any) => ({
+    //         name: day.name,
+    //         itineraryItems: {
+    //           create: day.itineraryItems.map((item: any) => ({
+    //             day: item.day,
+    //             title: item.title,
+    //             description: item.description,
+    //             expense: item.expense,
+    //             image: item.image,
+    //           })),
+    //         },
+    //       })),
+    //     },
+    //   },
+    //   select: { id: true },
+    // });
+
+    // console.log("Trip saved:", newTrip.id);
+
+    // return NextResponse.json({ data: jsonResponse }, { status: 200 });
   } catch (err) {
     console.error("Error generating trip:", err);
     return NextResponse.json(
