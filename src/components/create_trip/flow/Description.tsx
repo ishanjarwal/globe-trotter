@@ -7,6 +7,7 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { TripFormData } from "../validation";
 import { Mic, X } from "lucide-react";
+import SurpriseMeButton from "@/components/SurpriseButton";
 
 interface DescriptionProps {
   control: Control<TripFormData>;
@@ -76,6 +77,9 @@ const Description: React.FC<DescriptionProps> = ({
             >
               {listening ? <X /> : <Mic />}
             </button>
+            <div className="absolute ms-22 bottom-0 mb-4">
+              <SurpriseMeButton />
+            </div>
             <textarea
               {...field}
               className="resize-none w-full h-[250px] p-6 outline-none placeholder:text-white/50 placeholder:italic text-white/75 text-xl bg-black/25 rounded-3xl"
