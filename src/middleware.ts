@@ -5,7 +5,6 @@ const publicRoutes = [
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/clerk-webhook",
-  "/api/trip/(.*)",
   // "/api/create",
 ];
 
