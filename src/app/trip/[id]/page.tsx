@@ -132,15 +132,19 @@ export default function TripPage() {
                   key={idx}
                   className="mt-4 bg-[#2a2a2a] p-4 rounded-xl border border-[#3a3a3a]"
                 >
-                  <Link
-                    className="text-primary/75"
-                    href={getGoogleMapsLink(e.latitude, e.longitude)}
-                  >
-                    Open on Maps
-                  </Link>
-                  <h4 className="mt-2 text-xl font-semibold text-[#f5f5f5]">
-                    {e.title}
-                  </h4>
+                  <div className="flex justify-between items-start">
+                    <h4 className="mt-2 text-2xl font-semibold text-[#f5f5f5]">
+                      {e.title}
+                    </h4>
+                    <Link
+                      className="text-primary/75 flex space-x-2"
+                      href={getGoogleMapsLink(e.latitude, e.longitude)}
+                      target="_blank"
+                    >
+                      <span>Open on Maps</span>
+                      <MapPin />
+                    </Link>
+                  </div>
                   <div className="flex gap-4 mt-3">
                     <p className="flex-1 text-[#cccccc]">{e.description}</p>
                     {e.image && (

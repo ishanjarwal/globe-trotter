@@ -3,7 +3,7 @@ import { useAuth, UserButton } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
+import { Plus, User } from "lucide-react";
 
 import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
 
@@ -68,6 +68,12 @@ const Header = () => {
                   <Link href={"/create"}>
                     <span>Create a New Trip</span>
                     <Plus />
+                  </Link>
+                </Button>
+                <Button asChild>
+                  <Link href={"/mytrips"}>
+                    <span>My Trips</span>
+                    <User />
                   </Link>
                 </Button>
                 <UserButton
