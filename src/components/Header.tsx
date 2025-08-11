@@ -1,12 +1,17 @@
 "use client";
-import Link from "next/link";
+import { useAuth, UserButton } from "@clerk/nextjs";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { Button } from "./ui/button";
+import { Plus } from "lucide-react";
 const Header = () => {
   const navbar = [
     { name: "Home", link: "/" },
     { name: "About", link: "/about" },
     { name: "features", link: "/" },
   ];
+
+  const { isSignedIn } = useAuth();
 
   return (
     <motion.header
@@ -46,12 +51,39 @@ const Header = () => {
         </Link>
       </nav>
       <div className="login-signup flex items-center gap-x-10">
-        <Link href={"/login"} className="">
-          Login
-        </Link>
-        <Link href={"/signup"} className="px-4 py-1 rounded-lg bg-stone-800/90">
-          Sign Up
-        </Link>
+        {isSignedIn ? (
+          <div className="flex justify-end items-center space-x-4">
+            <Button asChild>
+              <Link href={"/create"}>
+                <span>Create a New Trip</span>
+                <Plus />
+              </Link>
+            </Button>
+            <UserButton
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: {
+                    width: "48px",
+                    height: "48px",
+                  },
+                },
+              }}
+            />
+          </div>
+        ) : (
+          <>
+            {" "}
+            <Link href={"/sign-in"} className="">
+              Login
+            </Link>
+            <Link
+              href={"/sign-up"}
+              className="px-4 py-1 rounded-lg bg-stone-800/90"
+            >
+              Sign Up
+            </Link>
+          </>
+        )}
       </div>
     </motion.header>
   );
