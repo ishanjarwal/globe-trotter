@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     let evt;
     try {
-      evt = wh.verify(payload, headers) as any;
+      evt = (await wh.verify(payload, headers)) as any;
       console.log("Event Verified");
     } catch (err) {
       console.log("Event Verification Error : ", err);
