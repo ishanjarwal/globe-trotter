@@ -1,29 +1,27 @@
-// schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DB_URL")
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   clerkId   String   @unique
   name      String?
   email     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  trips Trip[]
-  // preferences UserPreference[] // 
+  trips Trip[] // No relation fields on the array side
 }
 
 model Trip {
-  id            String   @id @default(cuid())
-  user          User     @relation(fields: [userId], references: [clerkId])
-  userId        String
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String   @db.ObjectId
+  user          User     @relation(fields: [userId], references: [id])
   title         String
   description   String?
   image         String?
@@ -40,9 +38,9 @@ model Trip {
 }
 
 model Day {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  tripId    String   @db.ObjectId
   trip      Trip     @relation(fields: [tripId], references: [id])
-  tripId    String
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,10 +49,10 @@ model Day {
 }
 
 model ItineraryItem {
-  id          String   @id @default(cuid())
-  destination Day      @relation(fields: [dayId], references: [id])
-  dayId       String
-  day         Int
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  dayId       String   @db.ObjectId
+  day         Day      @relation(fields: [dayId], references: [id])
+  dayNumber   Int
   title       String
   description String?
   image       String?

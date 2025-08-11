@@ -7,6 +7,16 @@ import { OpenAI } from "openai";
 import { auth } from "@clerk/nextjs/server";
 
 export const POST = async (req: Request) => {
+  const { userId } = await auth();
+  console.log(userId);
+  // const userId = "user_319M4mGAFyPYM7GMpd20V7DOOst";
+  if (!userId) {
+    return NextResponse.json(
+      { message: "Unauthorized Access" },
+      { status: 401 }
+    );
+  }
+
   try {
     const body = await req.json();
     body.dates = body.dates.map((d: string) => new Date(d));
@@ -145,14 +155,6 @@ Description: ${description}
 
     console.log(JSON.stringify(jsonResponse, null, 2));
 
-    const { userId } = await auth();
-    // const userId = "user_318ThLPGGaJ2BGeNdzyO8Rn2VMa";
-    if (!userId) {
-      return NextResponse.json(
-        { message: "Unauthorized Access" },
-        { status: 401 }
-      );
-    }
     const newTrip = await prisma.trip.create({
       data: {
         userId,
