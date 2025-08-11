@@ -46,6 +46,7 @@ const FormProgression: React.FC = () => {
     trigger,
     formState: { errors },
     getValues,
+    setValue,
   } = useForm<TripFormData>({
     resolver: zodResolver(TripSchema),
     mode: "onChange",
@@ -179,7 +180,7 @@ const FormProgression: React.FC = () => {
                   register: undefined,
                   errors,
                   getValues,
-                  setValue: undefined,
+                  setValue: setValue,
                   data: getValues(), // Current form values, optional
                   setData: undefined,
                 })}

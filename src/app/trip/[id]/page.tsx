@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Key, MapPin } from "lucide-react";
+import { DollarSign, Key, MapPin } from "lucide-react";
 import { IoIosPeople } from "react-icons/io";
 import { format } from "date-fns";
 import { getGoogleMapsLink, getGooglePlacePhotoUrl } from "@/lib/utils";
@@ -66,20 +66,27 @@ export default function TripPage() {
 
         {/* Trip Details */}
         <section className="mt-10">
-          <h2 className="text-2xl font-semibold flex items-center text-[#f0f0f0]">
+          <h2 className="text-2xl font-semibold flex items-center text-[#f0f0f0] mb-2">
             <MapPin className="mr-2" size={25} /> Trip Details
           </h2>
+          <h3 className="text-lg font-semibold flex items-center space-x-4 text-[#f0f0f0] mb-4">
+            <p className="flex items-center">
+              {" "}
+              <DollarSign /> Budget
+            </p>
+            <p>{data.budget}</p>
+          </h3>
           <div className="grid grid-cols-2 gap-6 mt-4">
             <div className="bg-[#1f1f1f] p-4 rounded-lg border border-[#2b2b2b]">
               <h3 className="text-xl font-medium">From</h3>
               <p className="text-[#aaaaaa]">
-                {format(new Date(data.startDate), "dd/MM/yy")}
+                {format(new Date(data.startDate), "dd MMMM yyyy")}
               </p>
             </div>
             <div className="bg-[#1f1f1f] p-4 rounded-lg border border-[#2b2b2b]">
               <h3 className="text-xl font-medium">To</h3>
               <p className="text-[#aaaaaa]">
-                {format(new Date(data.endDate), "dd/MM/yy")}
+                {format(new Date(data.endDate), "dd MMMM yyyy")}
               </p>
             </div>
           </div>
