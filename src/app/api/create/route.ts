@@ -60,6 +60,8 @@ Generate a trip plan in the following strict JSON schema:
         {
           "day": number,
           "title": string,
+          "latitude": float number,
+          "longitude":float number,
           "description": string,
           "expense": number
         }
@@ -141,49 +143,50 @@ Description: ${description}
       }
     }
 
-    console.log(jsonResponse);
-    return NextResponse.json({ data: jsonResponse }, { status: 200 });
+    console.log(JSON.stringify(jsonResponse, null, 2));
 
-    // const { userId } = await auth();
+    const { userId } = await auth();
     // const userId = "user_318ThLPGGaJ2BGeNdzyO8Rn2VMa";
-    // if (!userId) {
-    //   return NextResponse.json(
-    //     { message: "Unauthorized Access" },
-    //     { status: 401 }
-    //   );
-    // }
-    // const newTrip = await prisma.trip.create({
-    //   data: {
-    //     userId,
-    //     title: jsonResponse.title,
-    //     description: jsonResponse.description,
-    //     startDate,
-    //     endDate,
-    //     budget: budget.value,
-    //     totalAdults: adults,
-    //     totalChildren: children,
-    //     image: tripImage,
-    //     days: {
-    //       create: jsonResponse.days.map((day: any) => ({
-    //         name: day.name,
-    //         itineraryItems: {
-    //           create: day.itineraryItems.map((item: any) => ({
-    //             day: item.day,
-    //             title: item.title,
-    //             description: item.description,
-    //             expense: item.expense,
-    //             image: item.image,
-    //           })),
-    //         },
-    //       })),
-    //     },
-    //   },
-    //   select: { id: true },
-    // });
+    if (!userId) {
+      return NextResponse.json(
+        { message: "Unauthorized Access" },
+        { status: 401 }
+      );
+    }
+    const newTrip = await prisma.trip.create({
+      data: {
+        userId,
+        title: jsonResponse.title,
+        description: jsonResponse.description,
+        startDate,
+        endDate,
+        budget: budget.value,
+        totalAdults: adults,
+        totalChildren: children,
+        image: tripImage,
+        days: {
+          create: jsonResponse.days.map((day: any) => ({
+            name: day.name,
+            itineraryItems: {
+              create: day.itineraryItems.map((item: any) => ({
+                day: item.day,
+                title: item.title,
+                latitude: item.latitude,
+                longitude: item.longitude,
+                description: item.description,
+                expense: item.expense,
+                image: item.image,
+              })),
+            },
+          })),
+        },
+      },
+      select: { id: true },
+    });
 
-    // console.log("Trip saved:", newTrip.id);
+    console.log("Trip saved:", newTrip.id);
 
-    // return NextResponse.json({ data: jsonResponse }, { status: 200 });
+    return NextResponse.json({ id: newTrip.id }, { status: 200 });
   } catch (err) {
     console.error("Error generating trip:", err);
     return NextResponse.json(

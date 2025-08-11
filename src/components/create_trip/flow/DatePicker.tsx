@@ -1,22 +1,22 @@
+"use client";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
-import React from "react";
-import { Control, Controller, FieldErrors } from "react-hook-form";
-import { TripFormData } from "../validation";
+import React, { useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import "./style.css";
+import { Control, Controller } from "react-hook-form";
+import { TripFormData } from "../validation";
 
 interface DatePickerProps {
   control: Control<TripFormData>;
-  errors: FieldErrors<TripFormData>;
+  errors: any;
 }
 
-const DatePicker: React.FC<DatePickerProps> = ({ control, errors }) => {
+const DatePicker = ({ control, errors }: DatePickerProps) => {
   return (
     <div>
       <h2 className="text-2xl text-white font-bold text-center my-4">
         Pick the Dates
       </h2>
-
       {errors.dates && (
         <p className="text-white/75 text-lg mb-2 ms-1 text-center w-full">
           {errors.dates.message}
@@ -26,15 +26,26 @@ const DatePicker: React.FC<DatePickerProps> = ({ control, errors }) => {
       <Controller
         name="dates"
         control={control}
-        render={({ field }) => (
-          <DateRangePicker
-            onChange={(value: any) => field.onChange(value)}
-            value={field.value as any} // ✅ cast to correct type
-            minDate={new Date()}
-            calendarIcon={null}
-            clearIcon={null}
-          />
-        )}
+        render={({ field }) => {
+          return (
+            <DateRangePicker
+              onChange={(value) => {
+                if (Array.isArray(value) && value.length === 2) {
+                  field.onChange(value as [Date, Date]);
+                } else {
+                  field.onChange([]);
+                }
+              }}
+              value={
+                Array.isArray(field.value) && field.value.length === 2
+                  ? (field.value as [Date, Date])
+                  : null
+              }
+              isOpen={true}
+              minDate={new Date()}
+            />
+          );
+        }}
       />
     </div>
   );

@@ -59,6 +59,8 @@ model ItineraryItem {
   description String?
   image       String?
   expense     Int
+  latitude    Float
+  longitude   Float
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

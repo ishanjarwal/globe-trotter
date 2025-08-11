@@ -1,5 +1,10 @@
+import axios from "axios";
 import { Key, MapPin } from "lucide-react";
 import { IoIosPeople } from "react-icons/io";
+import { format } from "date-fns/format";
+import { getGoogleMapsLink, getGooglePlacePhotoUrl } from "@/lib/utils";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const data = [
   {
@@ -186,113 +191,147 @@ const data = [
   },
 ];
 
-const page = () => (
-  <div className="parent flex w-full min-h-screen relative">
-    <div className="left w-[50%]  px-12 pt-14 overflow-hidden overflow-y-auto">
-      <h1 className="text-7xl   max-w-3/4 sticky leading-20 text-foreground">
-        Trip from Paris to London
-      </h1>
-      <h3 className="mt-8 text-xl max-w-4/5 text-muted-foreground">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores minus
-        eveniet repellendus, fuga perspiciatis earum aliquid iste ea accusamus,
-        inventore in magnam culpa nostrum accusantium corporis dolorum.
-        Excepturi!
-      </h3>
-      <div className="image bg-orange-500 w-full mt-10 rounded-lg h-[40vh] aspect-video">
-        <img
-          className="size-full object-cover aspect-video rounded-lg"
-          src="https://images.pexels.com/photos/1530259/pexels-photo-1530259.jpeg"
-          alt=""
-        />
-      </div>
-      <div className="trip-details">
-        <h1 className="text-2xl mt-10 flex items-center text-foreground">
-          <span className="mr-2">
-            <MapPin size={"25px"}></MapPin>
-          </span>
-          Trip Details
+const page = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+  const res = await fetch(`http://localhost:3000/api/trip/${id}`, {
+    credentials: "include",
+    cache: "no-store",
+  });
+  console.log(res);
+  if (!res.ok) {
+    return redirect("/error");
+  }
+
+  const data = await res.json();
+
+  return (
+    <div className="parent flex w-full min-h-screen relative">
+      <div className="left w-[50%]  px-12 pt-14 overflow-hidden overflow-y-auto">
+        <h1 className="text-7xl   max-w-3/4 sticky leading-20 text-foreground">
+          {data.title}
         </h1>
-        <div className="detail flex w-full h-fit items-center gap-x-10  mt-5">
-          <div className="date flex justify-between w-1/2">
-            <div className="from">
-              <h1 className="mb-2 text-2xl text-foreground">From</h1>
-              <span className="text-xl text-muted-foreground">5/3/2005</span>
-            </div>
-            <div className="to">
-              <h1 className="mb-2 text-2xl text-foreground">To</h1>
-              <span className="text-xl text-muted-foreground">5/3/2005</span>
-            </div>
-          </div>
-          <div className="budget  w-1/2">
-            <h1 className="text-2xl mb-2 text-foreground">Est Price</h1>
-            <h2 className="text-xl text-muted-foreground">₹200000</h2>
-          </div>
+        <h3 className="mt-8 text-xl max-w-4/5 text-muted-foreground">
+          {data.description}
+        </h3>
+        <div className="image bg-orange-500 w-full mt-10 rounded-lg h-[40vh] aspect-video">
+          <img
+            className="size-full object-cover aspect-video rounded-lg"
+            src="https://images.pexels.com/photos/1530259/pexels-photo-1530259.jpeg"
+            alt=""
+          />
         </div>
-        <div className="wrap mt-7">
-          <h1 className="text-2xl flex items-center">
+        <div className="trip-details">
+          <h1 className="text-2xl mt-10 flex items-center text-foreground">
             <span className="mr-2">
-              <IoIosPeople size={"25px"}></IoIosPeople>
+              <MapPin size={"25px"}></MapPin>
             </span>
-            People Information
+            Trip Details
           </h1>
-          <div className="detail flex w-full h-fit items-center gap-x-10  mt-3">
-            <div className="date flex  justify-between w-1/2">
+          <div className="detail flex w-full h-fit items-center gap-x-10  mt-5">
+            <div className="date flex justify-between w-1/2">
               <div className="from">
-                <h1 className="mb-2 text-2xl text-foreground">Adult</h1>
-                <span className="text-xl text-muted-foreground">2</span>
+                <h1 className="mb-2 text-2xl text-foreground">From</h1>
+                <span className="text-xl text-muted-foreground">
+                  {" "}
+                  {format(data.startDate, "ddmmyy")}
+                </span>
+              </div>
+              <div className="to">
+                <h1 className="mb-2 text-2xl text-foreground">To</h1>
+                <span className="text-xl text-muted-foreground">
+                  {" "}
+                  {format(data.endDate, "ddmmyy")}
+                </span>
               </div>
             </div>
-            <div className="budget w-1/2">
-              <h1 className="text-2xl mb-2 text-foreground">Children</h1>
-              <h2 className="text-xl text-muted-foreground">12</h2>
+            <div className="budget  w-1/2">
+              <h1 className="text-2xl mb-2 text-foreground">Est Price</h1>
+              <h2 className="text-xl text-muted-foreground">{data.budget}</h2>
             </div>
           </div>
-        </div>
-        <div className="highlights mt-10">
-          <h1 className="text-2xl flex items-center">
-            <span className="mr-3">
-              <Key></Key>
-            </span>
-            <h1 className="text-foreground">Highlishts</h1>
-          </h1>
-          <ul className="wrappper mt-5">
-            {Array.from({ length: 5 }).map((_, id) => (
-              <li key={id} className="mt-2 text-xl text-muted-foreground">
-                This
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <div className="itenary bg  w-full mt-20">
-        <h1 className="text-4xl">Day Based Itenary</h1>
-        <div className="wrapper w-full bg">
-          {data.map((e, id) => (
-            <div className="date bg mt-10">
-              <div className="title w-full py-5  mb-2 text-3xl shadow-xl rounded-tr-2xl rounded-br-2xl px-2">
-                {`Day ${e.day}`}
+          <div className="wrap mt-7">
+            <h1 className="text-2xl flex items-center">
+              <span className="mr-2">
+                <IoIosPeople size={"25px"}></IoIosPeople>
+              </span>
+              People Information
+            </h1>
+            <div className="detail flex w-full h-fit items-center gap-x-10  mt-3">
+              <div className="date flex  justify-between w-1/2">
+                <div className="from">
+                  <h1 className="mb-2 text-2xl text-foreground">Adult</h1>
+                  <span className="text-xl text-muted-foreground">
+                    {data.totalAdults}
+                  </span>
+                </div>
               </div>
-              {e.locations.map((e, id) => (
-                <div className="locations mt-10 bg-gray-300/60 py-4 px-3 rounded-2xl">
-                  <div className="time font-semibold">{e.time}</div>
-                  <div className="title text-xl font-semibold mt-2">{e.title}</div>
-                  <div className="desc-img flex w-full bg justify-between">
-                    <div className="desc w-1/2 text-lg mt-3 flex items-center">
-                      {e.description}
+              <div className="budget w-1/2">
+                <h1 className="text-2xl mb-2 text-foreground">Children</h1>
+                <h2 className="text-xl text-muted-foreground">
+                  {data.totalChildren}
+                </h2>
+              </div>
+            </div>
+          </div>
+          <div className="highlights mt-10">
+            <h1 className="text-2xl flex items-center">
+              <span className="mr-3">
+                <Key></Key>
+              </span>
+              <h1 className="text-foreground">Highlishts</h1>
+            </h1>
+            <ul className="wrappper mt-5">
+              {Array.from({ length: 5 }).map((_, id) => (
+                <li key={id} className="mt-2 text-xl text-muted-foreground">
+                  This
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="itenary bg  w-full mt-20">
+          <h1 className="text-4xl">Day Based Itenary</h1>
+          <div className="wrapper w-full bg">
+            {data.days.map((day: any, index: number) => (
+              <div className="date bg mt-10">
+                <div className="title w-full py-5  mb-2 text-3xl shadow-xl rounded-tr-2xl rounded-br-2xl px-2">
+                  {day.name}
+                </div>
+                {day.itineraryItems.map((e: any, id: number) => (
+                  <div className="locations mt-10 bg-gray-300/60 py-4 px-3 rounded-2xl">
+                    <div className="time font-semibold">
+                      <Link
+                        className="text-blue-500 underline"
+                        href={getGoogleMapsLink(e.latitude, e.longitude)}
+                      >
+                        Open on Maps
+                      </Link>
                     </div>
-                    <div className="image h-32 w-2/6">
-                      <img className="size-full" src={e.image} alt="" />
+                    <div className="title text-xl font-semibold mt-2">
+                      {e.title}
+                    </div>
+                    <div className="desc-img flex w-full bg justify-between">
+                      <div className="desc w-1/2 text-lg mt-3 flex items-center">
+                        {e.description}
+                      </div>
+                      <div className="image h-32 w-2/6">
+                        <img
+                          className="size-full"
+                          src={getGooglePlacePhotoUrl(e.image, 450)}
+                          alt={e.title}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ))}
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+      <div className="right w-[50%] h-screen sticky top-0 right-0"></div>
     </div>
-    <div className="right w-[50%] h-screen sticky top-0 right-0"></div>
-  </div>
-);
+  );
+};
 
 export default page;

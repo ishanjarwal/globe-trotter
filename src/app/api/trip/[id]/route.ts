@@ -11,8 +11,12 @@ export const GET = async (
   try {
     const trip = await prisma.trip.findUnique({
       where: { id },
-      select: {
-        id: true,
+      include: {
+        days: {
+          include: {
+            itineraryItems: true,
+          },
+        },
       },
     });
 
@@ -20,7 +24,7 @@ export const GET = async (
       return NextResponse.json({ error: "Trip not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ id: trip.id }, { status: 200 });
+    return NextResponse.json(trip, { status: 200 });
   } catch (error) {
     console.error("Error fetching trip:", error);
     return NextResponse.json(
