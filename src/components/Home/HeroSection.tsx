@@ -31,7 +31,7 @@ const HeroSection = () => {
         transition={{ duration: 1, delay: 0.4 }}
         className="mt-5 text-8xl max-w-7xl text-center tracking-tighter"
       >
-        Magic UI is the new way way to make landing pages
+        Plan, Book, and Explore seamlessly with us as your Travel Companion
       </motion.h1>
       <motion.h2
         initial={{ opacity: 0, y: -30 }}
@@ -39,8 +39,7 @@ const HeroSection = () => {
         transition={{ duration: 1, delay: 0.5 }}
         className="text-lg mt-7 text-center max-w-2xl"
       >
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae illum ad
-        facere dignissimos iusto obcaecati aspernatur consequuntur iste.
+        Create personalized itineraries, discover hidden places, and book everything you need for your next adventure within a specified budget. Powered by AI, personalized for you.
       </motion.h2>
       <motion.button
         initial={{ opacity: 0, y: -30 }}
@@ -48,7 +47,7 @@ const HeroSection = () => {
         transition={{ duration: 1, delay: 0.7 }}
         className="mt-8 px-4 rounded-lg py-1 relative z-40 bg-white text-black flex items-center gap-x-2"
       >
-        <span>Get Started for free</span>{" "}
+        <span>Start Planning for Free</span>
         <span className="flex items-center">
           <FaArrowRightLong />
         </span>
