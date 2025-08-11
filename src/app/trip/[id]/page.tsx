@@ -193,7 +193,7 @@ const data = [
 
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const res = await fetch(`http://localhost:3000/api/trip/${id}`, {
+  const res = await fetch(`/api/trip/${id}`, {
     credentials: "include",
     cache: "no-store",
   });
