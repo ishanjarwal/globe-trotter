@@ -108,11 +108,12 @@ export default function TripPage() {
             <Key className="mr-3" /> Highlights
           </h2>
           <ul className="mt-4 list-disc pl-6 text-[#aaaaaa]">
-            {Array.from({ length: 5 }).map((_, idx) => (
-              <li key={idx} className="mt-2">
-                This
-              </li>
-            ))}
+            {data.highlights &&
+              data.highlights.map((el: string, idx: number) => (
+                <li key={idx} className="mt-2">
+                  {el}
+                </li>
+              ))}
           </ul>
         </section>
 
