@@ -39,13 +39,15 @@ const HeroSection = () => {
         transition={{ duration: 1, delay: 0.5 }}
         className="text-lg mt-7 text-center max-w-2xl"
       >
-        Create personalized itineraries, discover hidden places, and book everything you need for your next adventure within a specified budget. Powered by AI, personalized for you.
+        Create personalized itineraries, discover hidden places, and book
+        everything you need for your next adventure within a specified budget.
+        Powered by AI, personalized for you.
       </motion.h2>
       <motion.button
         initial={{ opacity: 0, y: -30 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1, delay: 0.7 }}
-        className="mt-8 px-4 rounded-lg py-1 relative z-40 bg-white text-black flex items-center gap-x-2"
+        className="mt-8 px-4  rounded-lg py-3 relative z-40 bg-white text-black flex items-center gap-x-2"
       >
         <span>Start Planning for Free</span>
         <span className="flex items-center">
