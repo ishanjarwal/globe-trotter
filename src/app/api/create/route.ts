@@ -7,9 +7,8 @@ import { OpenAI } from "openai";
 import { auth } from "@clerk/nextjs/server";
 
 export const POST = async (req: Request) => {
+  // Get Clerk userId (a string like "user_xxx")
   const { userId } = await auth();
-  console.log(userId);
-  // const userId = "user_319M4mGAFyPYM7GMpd20V7DOOst";
   if (!userId) {
     return NextResponse.json(
       { message: "Unauthorized Access" },
@@ -19,8 +18,10 @@ export const POST = async (req: Request) => {
 
   try {
     const body = await req.json();
+    // Parse dates from strings to Date objects
     body.dates = body.dates.map((d: string) => new Date(d));
 
+    // Validate request body
     const parsed = TripSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
@@ -39,12 +40,11 @@ export const POST = async (req: Request) => {
         (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
       ) + 1;
 
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+    // Extract main place name from description
     const placeResponse = await openai.chat.completions.create({
-      model: "gpt-4o-mini", // or "gpt-4" or "gpt-4o"
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "user",
@@ -57,6 +57,7 @@ export const POST = async (req: Request) => {
     const place = typeof rawPlace === "string" ? rawPlace.trim() : "";
     console.log("Extracted place:", place);
 
+    // Prompt to generate detailed trip plan JSON
     const prompt = `
 You are a travel planner.
 Generate a trip plan in the following strict JSON schema:
@@ -71,7 +72,7 @@ Generate a trip plan in the following strict JSON schema:
           "day": number,
           "title": string,
           "latitude": float number,
-          "longitude":float number,
+          "longitude": float number,
           "description": string,
           "expense": number
         }
@@ -97,7 +98,24 @@ Description: ${description}
 
     const text = tripResponse.choices[0].message?.content || "";
 
-    let jsonResponse;
+    let jsonResponse: {
+      title: string;
+      description: string;
+      days: Array<{
+        name: string;
+        itineraryItems: Array<{
+          day: number;
+          title: string;
+          latitude: number;
+          longitude: number;
+          description: string;
+          expense: number;
+          image?: string | null;
+        }>;
+      }>;
+      isVague?: boolean;
+    };
+
     try {
       jsonResponse = JSON.parse(text);
     } catch {
@@ -111,6 +129,7 @@ Description: ${description}
       return NextResponse.json({ isVague: true }, { status: 200 });
     }
 
+    // Fetch a main image for the trip from Google Places API
     let tripImage: string | null = null;
     try {
       const {
@@ -133,6 +152,7 @@ Description: ${description}
       console.error("Error fetching trip image:", err);
     }
 
+    // Fetch images for itinerary items similarly
     for (const day of jsonResponse.days) {
       for (const item of day.itineraryItems) {
         try {
@@ -155,9 +175,10 @@ Description: ${description}
 
     console.log(JSON.stringify(jsonResponse, null, 2));
 
+    // Create Trip with nested Days and ItineraryItems using Clerk userId string
     const newTrip = await prisma.trip.create({
       data: {
-        userId,
+        userId, // Clerk user ID string (not ObjectId)
         title: jsonResponse.title,
         description: jsonResponse.description,
         startDate,
@@ -167,11 +188,11 @@ Description: ${description}
         totalChildren: children,
         image: tripImage,
         days: {
-          create: jsonResponse.days.map((day: any) => ({
+          create: jsonResponse.days.map((day) => ({
             name: day.name,
             itineraryItems: {
-              create: day.itineraryItems.map((item: any) => ({
-                day: item.day,
+              create: day.itineraryItems.map((item) => ({
+                dayNumber: item.day,
                 title: item.title,
                 latitude: item.latitude,
                 longitude: item.longitude,
