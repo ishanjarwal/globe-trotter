@@ -3,7 +3,7 @@ import { Marquee } from "../magicui/marquee";
 
 const techstacks = [
   {
-    name: "React.js",
+    name: "Express Js",
     body: "Powerful front-end library for building fast, interactive UIs.",
     img: "https://skillicons.dev/icons?i=react",
   },
@@ -12,16 +12,7 @@ const techstacks = [
     body: "JavaScript runtime for scalable server-side apps.",
     img: "https://skillicons.dev/icons?i=nodejs",
   },
-  {
-    name: "Express.js",
-    body: "Minimal Node.js framework for APIs.",
-    img: "https://skillicons.dev/icons?i=express",
-  },
-  {
-    name: "MongoDB",
-    body: "NoSQL database for JSON-like document storage.",
-    img: "https://skillicons.dev/icons?i=mongodb",
-  },
+  
   {
     name: "Tailwind CSS",
     body: "Utility-first CSS framework for responsive UI.",
@@ -31,11 +22,6 @@ const techstacks = [
     name: "TypeScript",
     body: "Typed superset of JavaScript for better scalability.",
     img: "https://skillicons.dev/icons?i=typescript",
-  },
-  {
-    name: "Vite",
-    body: "Fast build tool and dev server for modern web apps.",
-    img: "https://skillicons.dev/icons?i=vite",
   },
   {
     name: "Clerk",
@@ -57,6 +43,26 @@ const techstacks = [
     body: "Modern UI components with Radix & Tailwind.",
     img: "https://avatars.githubusercontent.com/u/139895814?s=200&v=4",
   },
+  {
+    name: "Prisma",
+    body: "Next-generation Node.js and TypeScript ORM.",
+    img: "https://avatars.githubusercontent.com/u/17219288?s=200&v=4",
+},
+{
+    name: "Magic UI",
+    body: "Beautiful UI components for React and Tailwind CSS.",
+    img: "https://avatars.githubusercontent.com/u/139895814?s=200&v=4", 
+},
+{
+    name: "Postgres",
+    body: "Powerful, open source object-relational database system.",
+    img: "https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg",
+},
+{
+    name: "LangChain",
+    body: "Framework for building applications powered by LLMs.",
+    img: "https://avatars.githubusercontent.com/u/126733545?s=200&v=4",
+}
 ];
 
 const firstRow = techstacks.slice(0, Math.ceil(techstacks.length / 2));

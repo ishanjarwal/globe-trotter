@@ -63,15 +63,10 @@ const HeroSection = () => {
         <BgShape top="-100px" width="115%" left="-8%" height="90%"></BgShape>
         <BorderBeam duration={10} />
         <img
-          src={
-            "/hero.png"
-          }
+          src={"/hero.png"}
           alt="Hero"
           className="size-full object-cover rounded-4xl"
         />
-
-        {/* Black fade at bottom to hide glow */}
-        {/* <div className="pointer-events-none absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black via-black/80 to-black blur-2xl aspect-square z-30" /> */}
       </motion.div>
     </div>
   );

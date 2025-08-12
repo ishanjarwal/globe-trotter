@@ -35,7 +35,7 @@ const Flow = () => {
         <div className="container grid grid-cols-2 px-10 ">
           <div className="left  col-span-1 py-20  relative">
             <div className="con  max-w-3/4 border-l border-l-gray-400/80 pl-15 py-8">
-              <h1 className="text-4xl">Get A Custom Workflow With Ease</h1>
+              <h1 className="text-4xl text-accent">Get A Custom Workflow With Ease</h1>
               <div className="description mt-8 text-lg text-[#CCCCCC] mb-5">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
                 consequuntur iure distinctio quaerat? Ipsam optio, est repellat
@@ -57,7 +57,7 @@ const Flow = () => {
           </div>
           <div className="left col-span-1 flex py-15 pl-15 pr-10">
             <div className="con max-w-[90%] relative border-r border-r-gray-400/80 pr-12 pt-15 flex flex-col ml-20">
-              <h1 className="text-4xl">Get A Custom Workflow With Ease</h1>
+              <h1 className="text-4xl text-accent">Get A Custom Workflow With Ease</h1>
               <div className="description mt-8 text-lg text-[#CCCCCC] mb-5">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
                 consequuntur iure distinctio quaerat? Ipsam optio, est repellat
@@ -70,11 +70,15 @@ const Flow = () => {
           </div>
         </div>
 
+
+
+
+
         <div className="container grid grid-cols-2 mt-40 px-10">
           <div className="left  col-span-1 py-20 px-15 relative overflow-hidden">
             <BgShape left="150px" height="350px" width="350px"></BgShape>
             <div className="con  max-w-3/4 border-l border-l-gray-400/80 pl-15 py-8">
-              <h1 className="text-4xl">Get A Custom Workflow With Ease</h1>
+              <h1 className="text-4xl text-accent">Get A Custom Workflow With Ease</h1>
               <div className="description mt-8 text-lg text-[#CCCCCC] mb-5">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
                 consequuntur iure distinctio quaerat? Ipsam optio, est repellat
@@ -83,12 +87,17 @@ const Flow = () => {
               <span className="">
                 <HiMiniArrowLongRight size={42} fill="#CCCCCC" />
               </span>
-            </div>
+            </div>  
           </div>
-          <div className="left col-span-1 h-[60vh] p-10 px-15 bg-[#1C1C1C]/40 rounded-4xl border border-[#AAAAAA]/40">
+          <div className="left col-span-1 h-auto flex items-center justify-center p-10 px-15 bg-[#1C1C1C]/40 rounded-4xl border border-[#AAAAAA]/40">
             <OrbitingCirclesDemo></OrbitingCirclesDemo>
           </div>
         </div>
+
+
+
+
+
       </div>
     </div>
   );

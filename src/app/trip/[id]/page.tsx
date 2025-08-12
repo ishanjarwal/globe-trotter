@@ -4,7 +4,7 @@ import { IoIosPeople } from "react-icons/io";
 const data = [
   {
     day: 1,
-    locations: [
+    locations: [iiiiiy
       {
         time: "09:00 AM",
         title: "Eiffel Tower",
