@@ -20,7 +20,7 @@ export const GLOBE_CONFIG: COBEOptions = {
   mapSamples: 16000,
   mapBrightness: 1.2,
   baseColor: [0.05, 0.15, 0.3], // deep ocean
-  landColor: [0.95, 0.95, 0.85], // light beige/whitish continents
+  // landColor: [0.95, 0.95, 0.85], // light beige/whitish continents
   markerColor: [1, 0.5, 0], // bright orange markers
   glowColor: [0.2, 0.5, 1],
   markers: [
@@ -36,8 +36,6 @@ export const GLOBE_CONFIG: COBEOptions = {
     { location: [41.0082, 28.9784], size: 0.06 },
   ],
 };
-
-
 
 export function Globe({
   className,
