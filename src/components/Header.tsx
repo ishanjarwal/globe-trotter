@@ -14,6 +14,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import SurpriseMeButton from "./SurpriseButton";
+import { FaCrown } from "react-icons/fa";
 //   Sheet,
 //   SheetContent,
 //   SheetHeader,
@@ -86,7 +87,15 @@ const Header = () => {
                       },
                     },
                   }}
-                />
+                >
+                  <UserButton.MenuItems>
+                    <UserButton.Link
+                      label={"My Dashboard"}
+                      labelIcon={<User />}
+                      href="/userdashboard"
+                    />
+                  </UserButton.MenuItems>
+                </UserButton>
               </div>
             ) : (
               <>
