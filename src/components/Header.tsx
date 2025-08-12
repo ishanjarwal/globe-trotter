@@ -3,7 +3,7 @@ import { useAuth, UserButton } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
+import { Plus, User } from "lucide-react";
 
 import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
 
@@ -13,6 +13,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import SurpriseMeButton from "./SurpriseButton";
 //   Sheet,
 //   SheetContent,
 //   SheetHeader,
@@ -40,7 +41,7 @@ const Header = () => {
   const { isSignedIn } = useAuth();
 
   return (
-    <section className="py-4 px-10 fixed w-full top-0 backdrop-blur-sm bg-black/80 z-50 shadow-[0px_4px_22px_3px_var(--color-primary)]">
+    <section className="py-4 px-4 sticky top-0 backdrop-blur-sm bg-black/80 z-[100] shadow-[0px_4px_22px_3px_var(--color-primary)]">
       <div className="container mx-auto">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
@@ -68,6 +69,12 @@ const Header = () => {
                   <Link href={"/create"}>
                     <span>Create a New Trip</span>
                     <Plus />
+                  </Link>
+                </Button>
+                <Button asChild>
+                  <Link href={"/mytrips"}>
+                    <span>My Trips</span>
+                    <User />
                   </Link>
                 </Button>
                 <UserButton

@@ -1,35 +1,34 @@
-// schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DB_URL")
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   clerkId   String   @unique
   name      String?
   email     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  trips Trip[]
-  // preferences UserPreference[] // 
+  trips Trip[] @relation("UserTrips", fields: [], references: [])
 }
 
 model Trip {
-  id            String   @id @default(cuid())
-  user          User     @relation(fields: [userId], references: [clerkId])
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
   userId        String
+  user          User?    @relation("UserTrips", fields: [userId], references: [clerkId])
   title         String
   description   String?
   image         String?
   startDate     DateTime
   endDate       DateTime
   budget        String
+  highlights    String[]
   totalAdults   Int
   totalChildren Int
   createdAt     DateTime @default(now())
@@ -40,9 +39,9 @@ model Trip {
 }
 
 model Day {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  tripId    String   @db.ObjectId
   trip      Trip     @relation(fields: [tripId], references: [id])
-  tripId    String
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,14 +50,16 @@ model Day {
 }
 
 model ItineraryItem {
-  id          String   @id @default(cuid())
-  destination Day      @relation(fields: [dayId], references: [id])
-  dayId       String
-  day         Int
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  dayId       String   @db.ObjectId
+  day         Day      @relation(fields: [dayId], references: [id])
+  dayNumber   Int
   title       String
   description String?
   image       String?
   expense     Int
+  latitude    Float
+  longitude   Float
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

@@ -10,7 +10,6 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="min-h-screen bg-black border border-stone-200/30">
-      <Header />
       <HeroSection></HeroSection>
       <Features></Features>
       <Satisfactions></Satisfactions>

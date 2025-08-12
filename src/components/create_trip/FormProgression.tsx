@@ -1,37 +1,35 @@
 "use client";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { IoArrowBackOutline, IoArrowForwardOutline } from "react-icons/io5";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
-import { IoArrowBackOutline, IoArrowForwardOutline } from "react-icons/io5";
-import Budget from "./flow/Budget";
-import NumberOfPeople from "./flow/NumberOfPeople";
-import Generate from "./flow/Generate";
+import { Swiper, SwiperSlide } from "swiper/react";
+import Loader from "../loader/Loader";
 import Activities from "./flow/Activities";
-import { motion } from "framer-motion";
+import Budget from "./flow/Budget";
 import DatePicker from "./flow/DatePicker";
 import Description from "./flow/Description";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import Loader from "../loader/Loader";
+import NumberOfPeople from "./flow/NumberOfPeople";
 
-import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TripSchema, TripFormData } from "./validation";
+import { useForm } from "react-hook-form";
+import { TripFormData, TripSchema } from "./validation";
+import axios, { isAxiosError } from "axios";
+import toast from "react-hot-toast";
 
 interface FlowStep {
   element: React.ComponentType<any>;
   button: string;
 }
 
-// Map your components and pass needed props
 const flow: FlowStep[] = [
   { element: Description, button: "Next" },
   { element: DatePicker, button: "Next" },
   { element: Activities, button: "Next" },
   { element: Budget, button: "Next" },
   { element: NumberOfPeople, button: "Next" },
-  { element: Generate, button: "Generate" },
 ];
 
 const FormProgression: React.FC = () => {
@@ -48,6 +46,7 @@ const FormProgression: React.FC = () => {
     trigger,
     formState: { errors },
     getValues,
+    setValue,
   } = useForm<TripFormData>({
     resolver: zodResolver(TripSchema),
     mode: "onChange",
@@ -61,16 +60,24 @@ const FormProgression: React.FC = () => {
     },
   });
 
-  // On final submit
   const createTrip = async (formData: TripFormData) => {
     try {
+      console.log(formData);
       setLoading(true);
-      const response = await axios.post("/api/create", formData);
+      const response = await axios.post("/api/create", formData, {
+        withCredentials: true,
+      });
       if (response.status === 200) {
         const { id } = response.data;
         router.push(`/trip/${id}`);
       }
     } catch (e) {
+      if (isAxiosError(e)) {
+        if (e.response?.data.isVague) {
+          toast.error("Validation Failed, Please provide relevant data");
+        }
+      }
+      console.log(e);
       router.push("/error");
     } finally {
       setLoading(false);
@@ -173,7 +180,7 @@ const FormProgression: React.FC = () => {
                   register: undefined,
                   errors,
                   getValues,
-                  setValue: undefined,
+                  setValue: setValue,
                   data: getValues(), // Current form values, optional
                   setData: undefined,
                 })}

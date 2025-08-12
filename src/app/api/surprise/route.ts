@@ -1,4 +1,4 @@
-// app/api/trip/generate/route.ts
+// app/api/trip/generate/surprise/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/config/prisma";
 import { TripSchema } from "@/components/create_trip/validation";
@@ -7,7 +7,7 @@ import { OpenAI } from "openai";
 import { auth } from "@clerk/nextjs/server";
 
 export const POST = async (req: Request) => {
-  // Get Clerk userId (a string like "user_xxx")
+  // Authenticate user
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json(
@@ -17,12 +17,52 @@ export const POST = async (req: Request) => {
   }
 
   try {
-    const body = await req.json();
-    // Parse dates from strings to Date objects
-    body.dates = body.dates.map((d: string) => new Date(d));
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-    // Validate request body
-    const parsed = TripSchema.safeParse(body);
+    // Step 1: Ask LLM to suggest a single popular travel destination (city or place name)
+    // suitable for a 5-day, moderate budget trip for 1 adult with best activities.
+    const destResponse = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "user",
+          content: `
+You are a travel expert.
+Please suggest ONE popular travel destination around the world that would be great for a 5-day trip,
+for a single adult traveler with a moderate budget (~$1500),
+including sightseeing, local food, museums, nature, and cultural events.
+Respond with only the name of the destination (city or place name).
+          `.trim(),
+        },
+      ],
+      temperature: 0.7,
+    });
+
+    const rawDestination = destResponse.choices?.[0]?.message?.content ?? "";
+    const destination = rawDestination.trim();
+
+    // Step 2: Define the trip request body dynamically
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setDate(startDate.getDate() + 4); // 5 days total
+
+    const tripRequestBody = {
+      description: `A surprise trip to ${destination}, full of the best activities and experiences.`,
+      dates: [startDate.toISOString(), endDate.toISOString()],
+      activities: [
+        "sightseeing",
+        "local food",
+        "museums",
+        "nature",
+        "cultural events",
+      ],
+      budget: { name: "moderate", value: "$1500" },
+      adults: 1,
+      children: 0,
+    };
+
+    // Step 3: Validate input with TripSchema
+    const parsed = TripSchema.safeParse(tripRequestBody);
     if (!parsed.success) {
       return NextResponse.json(
         { isVague: true, errors: parsed.error },
@@ -33,16 +73,11 @@ export const POST = async (req: Request) => {
     const { description, dates, activities, budget, adults, children } =
       parsed.data;
 
-    const startDate = new Date(dates[0]);
-    const endDate = new Date(dates[1]);
-    const totalDays =
-      Math.floor(
-        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
-      ) + 1;
+    const totalDays = 5;
+    const startDateObj = new Date(dates[0]);
+    const endDateObj = new Date(dates[1]);
 
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-    // Extract main place name from description
+    // Step 4: Extract place (destination) from description (extra safety)
     const placeResponse = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -53,11 +88,10 @@ export const POST = async (req: Request) => {
       ],
       temperature: 0,
     });
-    const rawPlace = placeResponse.choices?.[0]?.message?.content;
-    const place = typeof rawPlace === "string" ? rawPlace.trim() : "";
-    console.log("Extracted place:", place);
+    const rawPlace = placeResponse.choices?.[0]?.message?.content ?? "";
+    const place = rawPlace.trim();
 
-    // Prompt to generate detailed trip plan JSON
+    // Step 5: Generate detailed trip plan JSON prompt
     const prompt = `
 You are a travel planner.
 Generate a trip plan in the following strict JSON schema:
@@ -82,14 +116,14 @@ Generate a trip plan in the following strict JSON schema:
   ]
 }
 Rules:
-- Use ${totalDays} days starting ${startDate.toDateString()} and ending ${endDate.toDateString()}.
+- Use ${totalDays} days starting ${startDateObj.toDateString()} and ending ${endDateObj.toDateString()}.
 - Budget: ${budget.value}
 - Adults: ${adults}, Children: ${children}
 - Activities: ${activities.join(", ")}
 - If description is too vague, unrelated, or inappropriate, respond ONLY with: {"isVague": true}.
 - Do not include extra fields.
 Description: ${description}
-`;
+`.trim();
 
     const tripResponse = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -131,7 +165,7 @@ Description: ${description}
       return NextResponse.json({ isVague: true }, { status: 200 });
     }
 
-    // Fetch a main image for the trip from Google Places API
+    // Step 6: Fetch main trip image from Google Places API
     let tripImage: string | null = null;
     try {
       const {
@@ -154,7 +188,7 @@ Description: ${description}
       console.error("Error fetching trip image:", err);
     }
 
-    // Fetch images for itinerary items similarly
+    // Step 7: Fetch images for itinerary items
     for (const day of jsonResponse.days) {
       for (const item of day.itineraryItems) {
         try {
@@ -175,17 +209,15 @@ Description: ${description}
       }
     }
 
-    console.log(JSON.stringify(jsonResponse, null, 2));
-
-    // Create Trip with nested Days and ItineraryItems using Clerk userId string
+    // Step 8: Save trip in DB
     const newTrip = await prisma.trip.create({
       data: {
-        userId, // Clerk user ID string (not ObjectId)
+        userId,
         title: jsonResponse.title,
         description: jsonResponse.description,
         highlights: jsonResponse.highlights,
-        startDate,
-        endDate,
+        startDate: startDateObj,
+        endDate: endDateObj,
         budget: budget.value,
         totalAdults: adults,
         totalChildren: children,
@@ -210,11 +242,9 @@ Description: ${description}
       select: { id: true },
     });
 
-    console.log("Trip saved:", newTrip.id);
-
     return NextResponse.json({ id: newTrip.id }, { status: 200 });
   } catch (err) {
-    console.error("Error generating trip:", err);
+    console.error("Error generating surprise trip:", err);
     return NextResponse.json(
       { message: "Something went wrong", error: String(err) },
       { status: 500 }
