@@ -15,7 +15,7 @@ export default function SurpriseMeButton() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/trip/generate/surprise", {
+      const res = await fetch("/api/surprise", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
