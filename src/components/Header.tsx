@@ -56,7 +56,7 @@ const Header = () => {
             </a>
             <div className="flex items-center space-x-2">
               {navbar.map((el: any, index: number) => (
-                <Link className="text-accent" href={el.link}>
+                <Link className="text-accent" key={index} href={el.link}>
                   {el.name}
                 </Link>
               ))}

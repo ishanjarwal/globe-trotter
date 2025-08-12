@@ -1,7 +1,7 @@
 export function GlobeDemo() {
   return (
     <div className="w-full h-full flex items-center justify-center">
-      <div className="relative flex items-center justify-center w-full h-full">
+      <div className="relative w-[450px] flex items-center justify-center h-[450px]">
         <Globe
           config={{
             ...GLOBE_CONFIG,

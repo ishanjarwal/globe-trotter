@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 const MOVEMENT_DAMPING = 1400;
 
 export const GLOBE_CONFIG: COBEOptions = {
-  width: 800,
-  height: 800,
+  width: 300,
+  height: 300,
   onRender: () => {},
   devicePixelRatio: 2,
   phi: 0,
@@ -106,7 +106,7 @@ export function Globe({
   return (
     <div
       className={cn(
-        "absolute inset-0 mx-auto aspect-[1/1] w-full max-w-[600px]",
+        "absolute inset-0 mx-auto aspect-[1/1] w-full max-w-[450px]",
         className
       )}
     >

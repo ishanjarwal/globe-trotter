@@ -42,7 +42,6 @@ const page = () => {
 
   return (
     <div className="min-h-screen bg-black relative pt-25">
-      <Header></Header>
       <div className="wrapper grid grid-cols-5">
         <div className="left col-span-1 min-h-screen px-3 py-10 flex flex-col items-center border-r border-accent/30">
           <div className="image size-42 rounded-full flex items-center justify-center">
