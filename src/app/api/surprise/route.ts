@@ -47,7 +47,7 @@ Respond with only the name of the destination (city or place name).
     endDate.setDate(startDate.getDate() + 4); // 5 days total
 
     const tripRequestBody = {
-      description: `A surprise trip to ${destination}, full of the best activities and experiences.`,
+      description: `A trip to ${destination}, full of the best activities and experiences.`,
       dates: [startDate.toISOString(), endDate.toISOString()],
       activities: [
         "sightseeing",
@@ -62,16 +62,9 @@ Respond with only the name of the destination (city or place name).
     };
 
     // Step 3: Validate input with TripSchema
-    const parsed = TripSchema.safeParse(tripRequestBody);
-    if (!parsed.success) {
-      return NextResponse.json(
-        { isVague: true, errors: parsed.error },
-        { status: 400 }
-      );
-    }
 
     const { description, dates, activities, budget, adults, children } =
-      parsed.data;
+      tripRequestBody;
 
     const totalDays = 5;
     const startDateObj = new Date(dates[0]);
